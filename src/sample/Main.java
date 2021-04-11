@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    public static String[] userDetails;
+    private static String[] userDetails;
     public static int requestID;
 
     @Override
@@ -17,6 +17,12 @@ public class Main extends Application {
         primaryStage.setTitle("Login");
         primaryStage.setScene(new Scene(root, 1280, 800));
         primaryStage.show();
+    }
+    public static String[] getUserDetails() {
+        return userDetails;
+    }
+    public static void setUserDetails(String[] newUserDetails) {
+        userDetails = newUserDetails;
     }
 
 

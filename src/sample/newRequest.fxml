@@ -42,7 +42,7 @@
                   <Font size="18.0" />
                </font>
             </Text>
-            <MenuButton layoutX="600.0" layoutY="178.0" mnemonicParsing="false" text="Select Issue">
+            <MenuButton layoutX="600.0" layoutY="178.0" mnemonicParsing="false" text="Select Issue" textAlignment="CENTER">
               <items>
                 <MenuItem fx:id="hardware" mnemonicParsing="false" onAction="#hardwareOnAction" text="Hardware" />
                 <MenuItem fx:id="software" mnemonicParsing="false" onAction="#softwareOnAction" text="Software" />

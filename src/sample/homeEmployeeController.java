@@ -22,8 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static sample.Main.userDetails;
-
 public class homeEmployeeController implements Initializable {
 
     Stage dialogStage = new Stage();
@@ -114,6 +112,7 @@ public class homeEmployeeController implements Initializable {
     }
 
     public void displayAll() {
+        String[] userDetails  = Main.getUserDetails();
         //makes data a new empty observable list that is backed by an arraylist.
         data = FXCollections.observableArrayList();
         //creates a connection to the database

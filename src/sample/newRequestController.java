@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static sample.Main.userDetails;
 
 public class newRequestController {
 
@@ -79,7 +78,7 @@ public class newRequestController {
         return type;
     }
 
-    public void newProduct() {
+    public void newProduct(String[] userDetails) {
         //sets up the database connection
         Connection conn = databaseConnection.connect();
         String loc = lol.getText();
@@ -111,35 +110,35 @@ public class newRequestController {
             }
         }
     }
+    private final String[] Title = {"Home", "New Request", "Login"};
+    private final String[] Fxml = {"homeEmployee.fxml", "newRequest.fxml", "login.fxml"};
+
+    public void generalOnAction (String titleChoice, String fxmlChoice) throws IOException{
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlChoice));
+        dialogStage.setTitle(titleChoice);
+        dialogStage.setScene(new Scene(root, 1280, 800));
+        dialogStage.show();
+    }
 
     public void homeOnAction() throws IOException {
         Stage stage = (Stage) home.getScene().getWindow();
         stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("homeEmployee.fxml"));
-        dialogStage.setTitle("Home");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        generalOnAction(Title[0], Fxml[0]);
     }
 
     public void newRequestOnAction() throws IOException {
         Stage stage = (Stage) newRequest.getScene().getWindow();
         stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("newRequest.fxml"));
-        dialogStage.setTitle("New Request");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        generalOnAction(Title[1], Fxml[1]);
     }
 
     public void logoutOnAction() throws IOException {
         Stage stage = (Stage) logout.getScene().getWindow();
         stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        dialogStage.setTitle("Log in");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        generalOnAction(Title[2], Fxml[2]);
     }
 
     public void newReqOnAction(){
-        newProduct();
+        newProduct(Main.getUserDetails());
     }
 }
