@@ -51,10 +51,10 @@
                      <children>
                         <TableView fx:id="tableview" layoutX="36.0" layoutY="14.0" prefHeight="693.0" prefWidth="884.0">
                           <columns>
-                            <TableColumn fx:id="idColumn" editable="false" prefWidth="148.0" text="Request_ID" />
+                            <TableColumn fx:id="idColumn" prefWidth="148.0" text="Request ID" />
                             <TableColumn fx:id="typeColumn" prefWidth="118.0" text="Type" />
                               <TableColumn fx:id="issueColumn" prefWidth="230.0" text="Issue" />
-                              <TableColumn fx:id="employee_idColumn" prefWidth="140.0" text="Employee_ID" />
+                              <TableColumn fx:id="employee_idColumn" prefWidth="140.0" text="Employee ID" />
                               <TableColumn fx:id="locationColumn" prefWidth="127.0" text="Location" />
                               <TableColumn fx:id="statusColumn" prefWidth="123.0" text="Status" />
                           </columns>

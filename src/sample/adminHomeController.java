@@ -39,12 +39,15 @@ public class adminHomeController implements Initializable {
     @FXML
     public TextField searchBar;
 
+
     private int id;
     private String type;
     private String issue;
     private int employee_id;
     private String location;
     private String status;
+
+
 
     @FXML
     private TableView<Request> tableview;
@@ -90,16 +93,14 @@ public class adminHomeController implements Initializable {
         tableview.getItems().clear();
         menuBoolean = false;
         //if the textfield searchProduct is not blank
-        if(!(searchBar.getText().isBlank())) {
+        if(!searchBar.getText().isBlank()) {
             //gets the text from the search bar
             searching = searchBar.getText();
             //creates a new sql statement
             sql = "SELECT * FROM requests WHERE REQUEST_ID = ?";
             //runs the method viewProducts
-        } else {
-            sql = "SELECT * FROM requests";
+            displayAll();
         }
-        displayAll();
     }
 
     private String sql  = "SELECT * FROM requests WHERE STATUS = 'Active'";
@@ -125,19 +126,26 @@ public class adminHomeController implements Initializable {
                 //assigns the ability to prepare an sql statement to the variable found
                 PreparedStatement found = conn.prepareStatement(sql);
                 //sets the value of ? in the sql statement to the value of the variable searching
-                found.setString(2, searching);
+                found.setString(1, searching);
                 //assigns the ability to execute the sql statement to the varuable res
                 res = found.executeQuery();
             }
             while (res.next()) {
                 //a new user is created based off thr class user
-                Request temp  = RequestNew.setRequestNew(res.getInt("REQUEST_ID"),
-                        res.getString("TYPE"),
-                        res.getString("ISSUE"), res.getInt("EMPLOYEE_ID"),
-                        res.getString("LOCATION"), res.getString("STATUS") );
+                Request request = new Request(id, type, issue, employee_id, location, status);
+                request.setID(res.getInt("REQUEST_ID"));
 
+                request.setType(res.getString("TYPE"));
+
+                request.setIssue(res.getString("ISSUE"));
+
+                request.setEmployee_ID(res.getInt("EMPLOYEE_ID"));
+
+                request.setLocation(res.getString("LOCATION"));
+
+                request.setStatus(res.getString("STATUS"));
                 //user is added to the observable list data
-                data.addAll(temp);
+                data.addAll(request);
             }
             //sets the item within the correct row and column in the database
             tableview.setItems(data);

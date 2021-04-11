@@ -1,13 +1,15 @@
 package sample;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import static sample.Main.userDetails;
 
 
 public class Controller {
@@ -68,10 +70,10 @@ public class Controller {
                     Stage stage = (Stage) login.getScene().getWindow();
                     stage.close();
                     if (dataRole.equals("Admin")) {
-                        Main.setUserDetails(new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole});
+                        userDetails = new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole};
                         root = FXMLLoader.load(getClass().getResource("adminHome.fxml"));
                     } else {
-                        Main.setUserDetails(new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole});
+                        userDetails = new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole};
                         root = FXMLLoader.load(getClass().getResource("homeEmployee.fxml"));
                     }
                     dialogStage.setTitle("Home");
@@ -102,18 +104,18 @@ public class Controller {
                 System.out.println(ex.getMessage());
             }
         }
-        return Main.getUserDetails();
+        return userDetails;
     }
 
-    public void homeOnAction() {
+    public void homeOnAction(ActionEvent actionEvent) {
     }
 
-    public void viewAllOnAction() {
+    public void viewAllOnAction(ActionEvent actionEvent) {
     }
 
-    public void logoutOnAction() {
+    public void logoutOnAction(ActionEvent actionEvent) {
     }
 
-    public void searchOnAction() {
+    public void searchOnAction(ActionEvent actionEvent) {
     }
 }
