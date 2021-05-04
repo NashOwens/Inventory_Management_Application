@@ -2,11 +2,9 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -22,78 +20,61 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static sample.Main.userDetails;
 
 public class homeEmployeeController implements Initializable {
 
     Stage dialogStage = new Stage();
-    Scene scene;
 
     @FXML
-    public Button home;
+    private Button home;
     @FXML
-    public Button logout;
+    private Button logout;
     @FXML
-    public Button search;
+    private Button search;
     @FXML
-    public TextField searchBar;
+    private TextField searchBar;
     @FXML
-    public Button newRequest;
+    private Button newRequest;
 
-    private ObservableList<Request> data;
 
-    private int id;
-    private String type;
-    private String issue;
-    private int employee_id;
-    private String location;
-    private String status;
-
-    public String sql  = "SELECT * FROM requests WHERE EMPLOYEE_ID = ?";
+    private String sql  = "SELECT * FROM requests WHERE EMPLOYEE_ID = ?";
     //initialises string searching
-    public static String searching = null;
+    private static String searching = null;
     //initialises string boolean
-    public static boolean menuBoolean = true;
-    public ResultSet res;
+    private static boolean menuBoolean = true;
+    private ResultSet res;
 
 
     @FXML
     private TableView<Request> tableview;
     @FXML
-    private TableColumn<Request, Integer> idColumn;
+    private TableColumn<Request,String> severityColumn;
     @FXML
-    private TableColumn<Request, Integer> employee_idColumn;
+    private TableColumn<Request, String> typeColumn;
     @FXML
-    private TableColumn<Request,String> typeColumn;
+    private TableColumn<Request, String> issueColumn;
     @FXML
-    private TableColumn<Request,String> issueColumn;
+    private TableColumn<Request, String> locationColumn;
     @FXML
-    private TableColumn<Request,String> locationColumn;
-    @FXML
-    private TableColumn<Request,String> statusColumn;
+    private TableColumn<Request, String> statusColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         assert tableview != null;
         //the column labelled Username is set the value of username within the user class
-        idColumn.setCellValueFactory(
-                new PropertyValueFactory<Request, Integer>("id"));
-        //the column labelled Password is set the value of password within the user class
         typeColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("type"));
+                new PropertyValueFactory<>("type"));
         //the column labelled Role is set the value of role within the user class
         issueColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("issue"));
-        employee_idColumn.setCellValueFactory(
-                new PropertyValueFactory<Request, Integer>("employee_id"));
+                new PropertyValueFactory<>("issue"));
+        severityColumn.setCellValueFactory(
+                new PropertyValueFactory<>("severity"));
         locationColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("location"));
+                new PropertyValueFactory<>("location"));
         statusColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("status"));
-        System.out.println("GAY");
+                new PropertyValueFactory<>("status"));
         try {
-            displayAll();
-            System.out.println("HELLO");
+            displayAll(Main.getUserDetails());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,13 +90,13 @@ public class homeEmployeeController implements Initializable {
             //creates a new sql statement
             sql = "SELECT * FROM requests WHERE REQUEST_ID = ? AND EMPLOYEE_ID = ?";
             //runs the method viewProducts
-            displayAll();
+            displayAll(Main.getUserDetails());
         }
     }
 
-    public void displayAll() {
+    public void displayAll(String[] userDetails) {
         //makes data a new empty observable list that is backed by an arraylist.
-        data = FXCollections.observableArrayList();
+        ObservableList<Request> data = FXCollections.observableArrayList();
         //creates a connection to the database
         Connection conn = databaseConnection.connect();
         try {
@@ -136,22 +117,14 @@ public class homeEmployeeController implements Initializable {
                 res = found.executeQuery();
             }
             while (res.next()) {
-                //a new user is created based off thr class user
-                Request request = new Request(id, type, issue, employee_id, location, status);
-                request.setID(res.getInt("EMPLOYEE_ID"));
-
-                request.setType(res.getString("TYPE"));
-
-                request.setIssue(res.getString("ISSUE"));
-
-                request.setEmployee_ID(res.getInt(3));
-
-                request.setLocation(res.getString("LOCATION"));
-                request.setStatus(res.getString("STATUS"));
                 //user is added to the observable list data
-                data.add(request);
+                data.add(new Request(res.getInt("REQUEST_ID"), res.getString("TYPE"),
+                        res.getString("ISSUE"), res.getInt("EMPLOYEE_ID"),
+                        res.getString("LOCATION"), res.getString("STATUS"), res.getString("SEVERITY")));
+
             }
             //sets the item within the correct row and column in the database
+
             tableview.setItems(data);
         } catch (
                 SQLException e) {
@@ -171,40 +144,29 @@ public class homeEmployeeController implements Initializable {
     public void activeOnAction(){
         menuBoolean = true;
         sql = "SELECT * FROM requests WHERE STATUS = 'Active' AND EMPLOYEE_ID = ?";
-        displayAll();
+        displayAll(Main.getUserDetails());
     }
 
     public void deactiveOnAction(){
         menuBoolean = true;
         sql = "SELECT * FROM requests WHERE STATUS = 'Solved' AND EMPLOYEE_ID = ?";
-        displayAll();
+        displayAll(Main.getUserDetails());
     }
-    private final String[] optionFile = {"HomeEmployee.fxml","newRequest.fxml", "login.fxml"};
-    private final String[] setTitle = {"Home", "New Request", "Login in"};
-
-    public void OnAction(String choiceClass, String title) throws IOException{
-        menuBoolean = true;
-        Parent root = FXMLLoader.load(getClass().getResource(choiceClass));
-        dialogStage.setTitle(title);
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
-    }
+    private final String[] optionFile = {"HomeEmployee.fxml","newRequest.fxml", "login.fxml", "approveRequest.fxml"};
+    private final String[] setTitle = {"Home", "New Request", "Login in", "Home"};
 
     public void homeOnAction() throws IOException {
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[0], setTitle[0]);
+        windowStage._Choice(home, optionFile[0], setTitle[0]);
     }
-
     public void newRequestOnAction() throws IOException {
-        Stage stage = (Stage) newRequest.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[1], setTitle[1]);
+        windowStage._Choice(newRequest, optionFile[1], setTitle[1]);
+    }
+    public void logoutOnAction() throws IOException {
+        windowStage._Choice(logout, optionFile[2], setTitle[2]);
+        Main.setUserDetails(null);
     }
 
-    public void logoutOnAction() throws IOException {
-        Stage stage = (Stage) logout.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[2], setTitle[2]);
+    public void approveRequestOnAction() throws IOException {
+        windowStage._Choice(newRequest, optionFile[3], setTitle[3]);
     }
 }

@@ -2,11 +2,9 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -22,7 +20,6 @@ import java.util.ResourceBundle;
 public class viewAllAdminController implements Initializable {
 
     Stage dialogStage = new Stage();
-    Scene scene;
 
     @FXML
     public Button home;
@@ -38,12 +35,6 @@ public class viewAllAdminController implements Initializable {
 
     private ObservableList<Request> data;
 
-    private int id;
-    private String type;
-    private String issue;
-    private int employee_id;
-    private String location;
-    private String status;
 
     public static String searching = null;
     //initialises string boolean
@@ -53,9 +44,7 @@ public class viewAllAdminController implements Initializable {
     @FXML
     private TableView<Request> tableview;
     @FXML
-    private TableColumn<Request, Integer> idColumn;
-    @FXML
-    private TableColumn<Request, Integer> employee_idColumn;
+    private TableColumn<Request,String> severityColumn;
     @FXML
     private TableColumn<Request,String> typeColumn;
     @FXML
@@ -69,20 +58,17 @@ public class viewAllAdminController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         assert tableview != null;
         //the column labelled Username is set the value of username within the user class
-        idColumn.setCellValueFactory(
-                new PropertyValueFactory<Request, Integer>("id"));
-        //the column labelled Password is set the value of password within the user class
         typeColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("type"));
+                new PropertyValueFactory<>("type"));
         //the column labelled Role is set the value of role within the user class
         issueColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("issue"));
-        employee_idColumn.setCellValueFactory(
-                new PropertyValueFactory<Request, Integer>("employee_id"));
+                new PropertyValueFactory<>("issue"));
+        severityColumn.setCellValueFactory(
+                new PropertyValueFactory<>("severity"));
         locationColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("location"));
+                new PropertyValueFactory<>("location"));
         statusColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("status"));
+                new PropertyValueFactory<>("status"));
         try {
             displayAll();
         } catch (Exception e) {
@@ -114,19 +100,9 @@ public class viewAllAdminController implements Initializable {
             }
             while (res.next()) {
                 //a new user is created based off thr class user
-                Request request = new Request(id, type, issue, employee_id, location, status);
-                request.setID(res.getInt("REQUEST_ID"));
-
-                request.setType(res.getString("TYPE"));
-
-                request.setIssue(res.getString("ISSUE"));
-
-                request.setEmployee_ID(res.getInt(3));
-
-                request.setLocation(res.getString("LOCATION"));
-                request.setStatus(res.getString("STATUS"));
-                //user is added to the observable list data
-                data.add(request);
+                data.addAll(new Request(res.getInt("REQUEST_ID"), res.getString("TYPE"),
+                        res.getString("ISSUE"), res.getInt("EMPLOYEE_ID"),
+                        res.getString("LOCATION"), res.getString("STATUS"), res.getString("SEVERITY")));
             }
             //sets the item within the correct row and column in the database
             tableview.setItems(data);
@@ -158,36 +134,26 @@ public class viewAllAdminController implements Initializable {
             displayAll();
         }
     }
-
-
+    private final String[] choice = {"adminHome.fxml","viewAllAdmin.fxml","login.fxml", "approveRequest.fxml"};
+    private final String[] menu = {"Home","View All","Log in", "Home"};
 
     public void homeOnAction() throws IOException {
         menuBoolean = true;
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("adminHome.fxml"));
-        dialogStage.setTitle("Home");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home ,choice[0], menu[0]);
     }
-
     public void viewAllOnAction() throws IOException {
         menuBoolean = true;
-        Stage stage = (Stage) viewAll.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("viewAllAdmin.fxml"));
-        dialogStage.setTitle("View All");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home ,choice[1], menu[1]);
+    }
+    public void logoutOnAction() throws IOException {
+        menuBoolean = true;
+        windowStage._Choice(home ,choice[2], menu[2]);
+        Main.setUserDetails(null);
     }
 
-    public void logoutOnAction() throws IOException {
-        Stage stage = (Stage) logout.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        dialogStage.setTitle("Log in");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+    public void activeRequestsOnAction() throws IOException {
+        menuBoolean = true;
+        windowStage._Choice(home ,choice[3], menu[3]);
     }
 
     public void activeOnAction(){

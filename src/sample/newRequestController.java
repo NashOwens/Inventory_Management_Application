@@ -1,9 +1,7 @@
 package sample;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -17,35 +15,36 @@ import java.sql.SQLException;
 
 import static sample.Main.userDetails;
 
+
 public class newRequestController {
 
     Stage dialogStage = new Stage();
-    Scene scene;
+
 
     @FXML
-    public Button home;
+    private Button home;
     @FXML
-    public Button newRequest;
+    private Button newRequest;
     @FXML
-    public Button logout;
+    private Button logout;
     @FXML
-    public MenuItem hardware;
+    private MenuItem hardware;
     @FXML
-    public MenuItem software;
+    private MenuItem software;
     @FXML
-    public MenuItem comm;
+    private MenuItem comm;
     @FXML
-    public MenuItem general;
+    private MenuItem general;
     @FXML
-    public MenuItem security;
+    private MenuItem security;
     @FXML
-    public MenuItem other;
+    private MenuItem other;
     @FXML
-    public TextArea details;
+    private TextArea details;
     @FXML
-    public TextField lol;
+    private TextField lol;
     @FXML
-    public Button newReq;
+    private Button newReq;
 
     public String type;
 
@@ -79,13 +78,13 @@ public class newRequestController {
         return type;
     }
 
-    public void newProduct() {
+    public void newProduct(String[] userDetails) throws IOException {
         //sets up the database connection
         Connection conn = databaseConnection.connect();
         String loc = lol.getText();
         try {
             //the sql string to add a new product
-            String sql = "INSERT INTO requests(TYPE,ISSUE,EMPLOYEE_ID,LOCATION,STATUS) VALUES(?,?,?,?,?)";
+            String sql = "INSERT INTO requests(TYPE,ISSUE,EMPLOYEE_ID,LOCATION,STATUS,SEVERITY) VALUES(?,?,?,?,?,?)";
             //prepares the sql statement by linking it to the database
             PreparedStatement pstmt = conn.prepareStatement(sql);
             //if the values are the correct data types than they are added to the database
@@ -93,7 +92,8 @@ public class newRequestController {
             pstmt.setString(2, details.getText());
             pstmt.setInt(3, Integer.parseInt(userDetails[0]));
             pstmt.setString(4, loc);
-            pstmt.setString(5, "Active");
+            pstmt.setString(5, "Needs Approval");
+            pstmt.setString(6, severity);
 
             pstmt.executeUpdate();
 
@@ -109,37 +109,49 @@ public class newRequestController {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            homeOnAction();
         }
     }
 
+    private final String[] choice = {"homeEmployee.fxml","newRequest.fxml","login.fxml"};
+    private final String[] menu = {"Home","New Request","Logout"};
+
     public void homeOnAction() throws IOException {
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("homeEmployee.fxml"));
-        dialogStage.setTitle("Home");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[0], menu[0]);
     }
 
     public void newRequestOnAction() throws IOException {
-        Stage stage = (Stage) newRequest.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("newRequest.fxml"));
-        dialogStage.setTitle("New Request");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[1], menu[1]);
     }
 
     public void logoutOnAction() throws IOException {
-        Stage stage = (Stage) logout.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        dialogStage.setTitle("Log in");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[2], menu[2]);
+        Main.setUserDetails(null);
     }
 
-    public void newReqOnAction(){
-        newProduct();
+    public void newReqOnAction() throws IOException {
+        newProduct(Main.getUserDetails());
+    }
+
+    public String severity = "Medium";
+
+    public String criticalOnAction(ActionEvent actionEvent) {
+        severity = "Critical";
+        return severity;
+    }
+
+    public String highOnAction(ActionEvent actionEvent) {
+        severity = "High";
+        return severity;
+    }
+
+    public String medOnAction(ActionEvent actionEvent) {
+        severity = "Medium";
+        return severity;
+    }
+
+    public String lowOnAction(ActionEvent actionEvent) {
+        severity = "Low";
+        return severity;
     }
 }

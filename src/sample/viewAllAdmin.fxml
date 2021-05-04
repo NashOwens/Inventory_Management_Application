@@ -16,20 +16,25 @@
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="viewAll" layoutX="-2.0" layoutY="334.0" mnemonicParsing="false" onAction="#viewAllOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="VIEW ALL REQUESTS" textFill="WHITE">
+                  <Button fx:id="viewAll" layoutX="-2.0" layoutY="395.0" mnemonicParsing="false" onAction="#viewAllOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="VIEW ALL REQUESTS" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="logout" layoutX="-2.0" layoutY="392.0" mnemonicParsing="false" onAction="#logoutOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="LOGOUT" textFill="WHITE">
+                  <Button fx:id="logout" layoutY="466.0" mnemonicParsing="false" onAction="#logoutOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="LOGOUT" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
                   <Line endX="221.0" layoutX="99.0" layoutY="276.0" startX="-100.0" stroke="WHITE" />
                   <Line endX="221.0" layoutX="99.0" layoutY="333.0" startX="-100.0" stroke="WHITE" />
-                  <Line endX="221.0" layoutX="98.0" layoutY="394.0" startX="-100.0" stroke="WHITE" />
-                  <Line endX="221.0" layoutX="98.0" layoutY="447.0" startX="-100.0" stroke="WHITE" />
+                  <Line endX="221.0" layoutX="100.0" layoutY="468.0" startX="-100.0" stroke="WHITE" />
+                  <Line endX="221.0" layoutX="100.0" layoutY="521.0" startX="-100.0" stroke="WHITE" />
+                  <Button fx:id="activeRequests" layoutX="10.0" layoutY="337.0" mnemonicParsing="false" onAction="#activeRequestsOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="VIEW ACTIVE REQUESTS" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Button>
                </children>
             </Pane>
             <Pane layoutX="315.0" prefHeight="66.0" prefWidth="968.0" style="-fx-background-color: #16AA83;">
@@ -50,10 +55,9 @@
                      <children>
                         <TableView fx:id="tableview" layoutX="36.0" layoutY="14.0" prefHeight="693.0" prefWidth="884.0">
                            <columns>
-                              <TableColumn fx:id="idColumn" prefWidth="148.0" text="Request ID" />
                               <TableColumn fx:id="typeColumn" prefWidth="118.0" text="Type" />
                               <TableColumn fx:id="issueColumn" prefWidth="230.0" text="Issue" />
-                              <TableColumn fx:id="employee_idColumn" prefWidth="140.0" text="Employee ID" />
+                              <TableColumn fx:id="severityColumn" prefWidth="140.0" text="Severity" />
                               <TableColumn fx:id="locationColumn" prefWidth="127.0" text="Location" />
                               <TableColumn fx:id="statusColumn" prefWidth="123.0" text="Status" />
                            </columns>

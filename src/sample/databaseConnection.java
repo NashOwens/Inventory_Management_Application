@@ -10,7 +10,7 @@ public class databaseConnection {
     public static Connection connect() {
         Connection conn = null;
         //gets the filename of where the database is held
-        String fileName = "C:/sqlite/db/ticketDatabase.db";
+        String fileName = "ticketDatabase.db";
         // SQLite connection string
         String url = "jdbc:sqlite:" + fileName;
         try {

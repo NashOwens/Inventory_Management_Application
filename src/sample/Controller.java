@@ -1,15 +1,13 @@
 package sample;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.fxml.FXMLLoader;
-
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,21 +15,21 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import static sample.Main.userDetails;
+
 
 
 public class Controller {
 
     @FXML
-    public Label loginMessageLabel;
+    private Label loginMessageLabel;
     @FXML
-    public TextField username;
+    private TextField username;
     @FXML
-    public PasswordField password;
+    private PasswordField password;
     @FXML
-    public Button login;
+    private Button login;
     @FXML
-    public Label numAttempt;
+    private Label numAttempt;
 
     private static int attempt = 0;
     private static String dataUsername = null;
@@ -42,15 +40,15 @@ public class Controller {
     Stage dialogStage = new Stage();
 
     @FXML
-    public void loginOnAction(){
-        if(!username.getText().isBlank() && !password.getText().isBlank()){
+    public void loginOnAction() {
+        if (!username.getText().isBlank() && !password.getText().isBlank()) {
             validateLogin();
-        }else{
+        } else {
             loginMessageLabel.setText("Incorrect Username and/or Password");
         }
     }
 
-    public String[] validateLogin() {
+    public void validateLogin() {
         Connection conn = databaseConnection.connect();
         Parent root;
         try {
@@ -65,15 +63,16 @@ public class Controller {
                 dataUsername = rs.getString("USERNAME");
                 dataPassword = rs.getString("PASSWORD");
                 dataRole = rs.getString("ROLE");
+                dataUsername = Main.decrypt(dataUsername);
+                dataPassword = Main.decrypt(dataPassword);
                 if (dataUsername.equals(user) && dataPassword.equals(pass)) {
+                    Main.setUserDetails(new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole});
                     success = true;
                     Stage stage = (Stage) login.getScene().getWindow();
                     stage.close();
                     if (dataRole.equals("Admin")) {
-                        userDetails = new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole};
-                        root = FXMLLoader.load(getClass().getResource("adminHome.fxml"));
+                        root = FXMLLoader.load(getClass().getResource("approveRequest.fxml"));
                     } else {
-                        userDetails = new String[]{String.valueOf(dataEmployee_ID), user, pass, dataRole};
                         root = FXMLLoader.load(getClass().getResource("homeEmployee.fxml"));
                     }
                     dialogStage.setTitle("Home");
@@ -104,18 +103,13 @@ public class Controller {
                 System.out.println(ex.getMessage());
             }
         }
-        return userDetails;
     }
 
-    public void homeOnAction(ActionEvent actionEvent) {
-    }
+    public void homeOnAction() { }
 
-    public void viewAllOnAction(ActionEvent actionEvent) {
-    }
+    public void logoutOnAction() { }
 
-    public void logoutOnAction(ActionEvent actionEvent) {
-    }
 
-    public void searchOnAction(ActionEvent actionEvent) {
-    }
 }
+
+

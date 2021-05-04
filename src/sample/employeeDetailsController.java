@@ -1,13 +1,9 @@
 package sample;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,34 +13,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static sample.Main.requestID;
-
 public class employeeDetailsController implements Initializable {
+
     public static boolean menuBoolean = true;
-    Stage dialogStage = new Stage();
-    Scene scene;
 
     @FXML
-    public Label employeeEmail;
+    private Label employeeEmail;
     @FXML
-    public Button close;
+    private Button close;
     @FXML
-    public Label employeeNum;
+    private Label employeeNum;
     @FXML
-    public Button home;
+    private Button home;
     @FXML
-    public Button viewAll;
+    private Button viewAll;
     @FXML
-    public Button logout;
+    private Button logout;
 
-    public ResultSet res;
+    private ResultSet res;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         displayDetails();
     }
 
-    public int employee_id;
+    private int employee_id;
 
     public void displayDetails(){
         Connection conn = databaseConnection.connect();
@@ -52,7 +45,7 @@ public class employeeDetailsController implements Initializable {
             String sql = "SELECT EMPLOYEE_ID FROM requests WHERE REQUEST_ID = ?";
             PreparedStatement found = conn.prepareStatement(sql);
             //sets the value of ? in the sql statement to the value of the variable searching
-            found.setInt(1, requestID);
+            found.setInt(1, Main.getRequestID());
             //assigns the ability to execute the sql statement to the varuable res
             res = found.executeQuery();
 
@@ -87,6 +80,9 @@ public class employeeDetailsController implements Initializable {
             String email = res.getString("EMAIL");
             String phone = res.getString("PHONE_NUM");
 
+            email = Main.decrypt(email);
+            phone = Main.decrypt(phone);
+
             employeeEmail.setText(email);
             employeeNum.setText("0" + phone);
 
@@ -103,43 +99,30 @@ public class employeeDetailsController implements Initializable {
             }
         }
     }
+    private final String[] choice = {"adminHome.fxml","viewAllAdmin.fxml","login.fxml","adminHome.fxml", "adminHome.fxml", "approveRequest.fxml"};
+    private final String[] menu = {"View All","Log in","Home","Admin Home","Home"};
 
     public void homeOnAction() throws IOException {
-        menuBoolean = true;
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("adminHome.fxml"));
-        dialogStage.setTitle("Home");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[0], menu[0]);
     }
 
     public void viewAllOnAction() throws IOException {
         menuBoolean = true;
-        Stage stage = (Stage) viewAll.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("viewAllAdmin.fxml"));
-        dialogStage.setTitle("View All");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[1], menu[1]);
     }
 
     public void logoutOnAction() throws IOException {
-        Stage stage = (Stage) logout.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        dialogStage.setTitle("Log in");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[2], menu[2]);
+        Main.setUserDetails(null);
     }
 
     public void closeOnAction() throws IOException {
         menuBoolean = true;
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("adminHome.fxml"));
-        dialogStage.setTitle("Home");
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
+        windowStage._Choice(home, choice[3], menu[3]);
+    }
+
+    public void activeRequestsOnAction() throws IOException {
+        menuBoolean = true;
+        windowStage._Choice(home, choice[4], menu[4]);
     }
 }

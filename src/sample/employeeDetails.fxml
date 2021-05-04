@@ -17,20 +17,25 @@
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="viewAll" layoutX="-2.0" layoutY="334.0" mnemonicParsing="false" onAction="#viewAllOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="VIEW ALL REQUESTS" textFill="WHITE">
+                  <Button fx:id="viewAll" layoutY="400.0" mnemonicParsing="false" onAction="#viewAllOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="VIEW ALL REQUESTS" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="logout" layoutX="-2.0" layoutY="392.0" mnemonicParsing="false" onAction="#logoutOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="LOGOUT" textFill="WHITE">
+                  <Button fx:id="logout" layoutY="464.0" mnemonicParsing="false" onAction="#logoutOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="LOGOUT" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
                   <Line endX="221.0" layoutX="99.0" layoutY="276.0" startX="-100.0" stroke="WHITE" />
                   <Line endX="221.0" layoutX="99.0" layoutY="333.0" startX="-100.0" stroke="WHITE" />
-                  <Line endX="221.0" layoutX="98.0" layoutY="394.0" startX="-100.0" stroke="WHITE" />
-                  <Line endX="221.0" layoutX="98.0" layoutY="447.0" startX="-100.0" stroke="WHITE" />
+                  <Line endX="221.0" layoutX="100.0" layoutY="466.0" startX="-100.0" stroke="WHITE" />
+                  <Line endX="221.0" layoutX="100.0" layoutY="519.0" startX="-100.0" stroke="WHITE" />
+                  <Button fx:id="activeRequests" layoutY="334.0" mnemonicParsing="false" onAction="#activeRequestsOnAction" prefHeight="58.0" prefWidth="322.0" style="-fx-background-color: #16AA83;" text="VIEW ACTIVE REQUESTS" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Button>
                </children>
             </Pane>
          </children></AnchorPane>

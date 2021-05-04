@@ -2,86 +2,69 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
 
-import static sample.Main.requestID;
 
 public class adminHomeController implements Initializable {
 
     public Button viewEmployee;
-    Stage dialogStage = new Stage();
-    Scene scene;
-
-    @FXML
-    public Button home;
-    @FXML
-    public Button viewAll;
-    @FXML
-    public Button logout;
-    @FXML
-    public Button search;
-    @FXML
-    public TextField searchBar;
 
 
-    private int id;
-    private String type;
-    private String issue;
-    private int employee_id;
-    private String location;
-    private String status;
-
-
+    @FXML
+    private Button home;
+    @FXML
+    private Button viewAll;
+    @FXML
+    private Button logout;
+    @FXML
+    private Button search;
+    @FXML
+    private TextField searchBar;
 
     @FXML
     private TableView<Request> tableview;
-    @FXML
-    private TableColumn<Request, Integer> idColumn;
+
     @FXML
     private TableColumn<Request, String> employee_idColumn;
     @FXML
-    private TableColumn<Request,String> typeColumn;
+    private TableColumn<Request, String> typeColumn;
     @FXML
-    private TableColumn<Request,String> issueColumn;
+    private TableColumn<Request, String> issueColumn;
     @FXML
-    private TableColumn<Request,String> locationColumn;
+    private TableColumn<Request, String> locationColumn;
     @FXML
-    private TableColumn<Request,String> statusColumn;
+    private TableColumn<Request, String> statusColumn;
+    @FXML
+    private TableColumn<Request,String> severityColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         assert tableview != null;
         //the column labelled Username is set the value of username within the user class
-        idColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,Integer>("id"));
         //the column labelled Password is set the value of password within the user class
         typeColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("type"));
+                new PropertyValueFactory<>("type"));
         //the column labelled Role is set the value of role within the user class
         issueColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("issue"));
-        employee_idColumn.setCellValueFactory(
-                new PropertyValueFactory<Request, String>("employee_id"));
+                new PropertyValueFactory<>("issue"));
+        severityColumn.setCellValueFactory(
+                new PropertyValueFactory<>("severity"));
         locationColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("location"));
+                new PropertyValueFactory<>("location"));
         statusColumn.setCellValueFactory(
-                new PropertyValueFactory<Request,String>("status"));
+                new PropertyValueFactory<>("status"));
         try {
             displayAll();
         } catch (Exception e) {
@@ -132,20 +115,9 @@ public class adminHomeController implements Initializable {
             }
             while (res.next()) {
                 //a new user is created based off thr class user
-                Request request = new Request(id, type, issue, employee_id, location, status);
-                request.setID(res.getInt("REQUEST_ID"));
-
-                request.setType(res.getString("TYPE"));
-
-                request.setIssue(res.getString("ISSUE"));
-
-                request.setEmployee_ID(res.getInt("EMPLOYEE_ID"));
-
-                request.setLocation(res.getString("LOCATION"));
-
-                request.setStatus(res.getString("STATUS"));
-                //user is added to the observable list data
-                data.addAll(request);
+                data.addAll(new Request(res.getInt("REQUEST_ID"), res.getString("TYPE"),
+                        res.getString("ISSUE"), res.getInt("EMPLOYEE_ID"),
+                        res.getString("LOCATION"), res.getString("STATUS"), res.getString("SEVERITY")));
             }
             //sets the item within the correct row and column in the database
             tableview.setItems(data);
@@ -164,62 +136,40 @@ public class adminHomeController implements Initializable {
         }
     }
 
-    private final String[] optionFile = {"adminHome.fxml","viewAllAdmin.fxml", "login.fxml", "employeeDetails.fxml"};
-    private final String[] setTitle = {"Home", "View All", "Login in", "Employee details"};
+    private static final String[] optionFile = {"approveRequest.fxml", "viewAllAdmin.fxml", "login.fxml", "employeeDetails.fxml", "adminHome.fxml"};
+    private static final String[] setTitle = {"Home", "View All", "Login in", "Employee details", "View Active Requests", };
 
-    public void OnAction(String choiceClass, String title) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource(choiceClass));
-        dialogStage.setTitle(title);
-        dialogStage.setScene(new Scene(root, 1280, 800));
-        dialogStage.show();
-    }
     public void homeOnAction() throws IOException  {
         menuBoolean = true;
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[0], setTitle[0]);
+        windowStage._Choice(home, optionFile[0], setTitle[0]);
     }
     public void viewAllOnAction() throws IOException {
         menuBoolean = true;
-        Stage stage = (Stage) viewAll.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[1], setTitle[1]);
+        windowStage._Choice(viewAll, optionFile[1], setTitle[1]);
     }
     public void logoutOnAction() throws IOException {
-        Stage stage = (Stage) logout.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[2], setTitle[2]);
+        windowStage._Choice(logout, optionFile[2], setTitle[2]);
     }
-    public void viewEmployeeOnAction() throws IOException {
-        displayemployeeID();
+    public void viewEmployeeOnAction() {
+        displayEmployeeID();
+    }
+    public void displayEmployeeID() {
         menuBoolean = true;
-        Stage stage = (Stage) home.getScene().getWindow();
-        stage.close();
-        OnAction(optionFile[3], setTitle[3]);
+        windowStage._DisplayEmployeeID(home, tableview, optionFile[3], setTitle[3]);
     }
-
-    public int displayemployeeID(){
-        Request request = tableview.getSelectionModel().getSelectedItem();
-        requestID = request.getID();
-        return requestID;
+    public void activeRequestsOnAction(){
+        menuBoolean = true;
+        windowStage._DisplayEmployeeID(home, tableview, optionFile[4], setTitle[4]);
     }
-
-
 
     public void solveIssue(String statusInsert){
         Connection conn = databaseConnection.connect();
         try {
-            if (requestID == 0) {
-                JOptionPane.showMessageDialog(null, "Please select a request from the table first");
-            } else {
-                Request request = tableview.getSelectionModel().getSelectedItem();
-                requestID = request.getID();
-            }
             String sql = "UPDATE requests SET STATUS = '" + statusInsert + "' WHERE REQUEST_ID = ?";
             //links the sql statement to the database
             PreparedStatement ps = conn.prepareStatement(sql);
             //sets the ? to the id of the row selected
-            ps.setInt(1, requestID);
+            ps.setInt(1, Main.getRequestID());
             //executes the sql statement
             ps.executeUpdate();
         }catch (SQLException throwables) {
@@ -235,11 +185,13 @@ public class adminHomeController implements Initializable {
             }
         }
     }
-    private final String[] choiceStatus = {"Solved", "Ongoing"};
 
+    private final String[] choiceStatus = {"Solved", "Ongoing"};
     public void solvedOnAction() {
         solvedOrOnGoingOnAction(choiceStatus[0]);
     }
+    public void onGoingOnAction(){ solvedOrOnGoingOnAction(choiceStatus[1]); }
+
     public void solvedOrOnGoingOnAction(String option){
         ObservableList<Request> allRequest, SingleRequest;
         //assigns all the data in the table to the observale list allUser
@@ -249,11 +201,6 @@ public class adminHomeController implements Initializable {
         //removes the vale of singleUser from the observable list allUser
         solveIssue(option);
         SingleRequest.forEach(allRequest::remove);
-    }
-
-    public void onGoingOnAction(){
-        solvedOrOnGoingOnAction(choiceStatus[1]);
-
     }
 
 }
